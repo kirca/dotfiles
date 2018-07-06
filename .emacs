@@ -10,6 +10,8 @@
 (load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
 (load-file "~/.emacs.d/docker-tramp.el/docker-tramp.el")
 (load-file "~/.emacs.d/lxc-tramp.el/lxc-tramp.el")
+(load-file "~/.emacs.d/haxe-mode.el")
+(load-file "~/.emacs.d/beancount.el")
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -31,6 +33,8 @@
     go-mode
     ledger-mode
     rust-mode
+    elm-mode
+    haxe-mode
     ))
 
 (mapc #'(lambda (package)
@@ -63,6 +67,8 @@
 
 (elpy-enable)
 (elpy-use-ipython)
+(setq elpy-rpc-python-command "python3")
+(setq python-shell-interpreter "ipython3")
 
 (when (require 'flycheck nil t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
@@ -97,6 +103,9 @@
 (setq org-src-fontify-natively t)
 (setq org-startup-truncated nil)
 (setq org-time-clocksum-use-fractional t)
+
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "tabularx"))
 
 
 ;; Tramp
