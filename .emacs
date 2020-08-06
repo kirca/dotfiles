@@ -5,6 +5,9 @@
 
 (require 'package)
 
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 (load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
@@ -12,6 +15,14 @@
 (load-file "~/.emacs.d/lxc-tramp.el/lxc-tramp.el")
 (load-file "~/.emacs.d/haxe-mode.el")
 (load-file "~/.emacs.d/beancount.el")
+(load-file "~/.emacs.d/subtitles.el")
+
+(add-to-list 'load-path "~/.emacs.d/notmuch-0.21/")
+(require 'notmuch)
+
+(add-to-list 'load-path "~/.emacs.d/emacs-gdscript-mode/")
+(setq prog-first-column 0)
+(require 'gdscript-mode)
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -35,6 +46,9 @@
     rust-mode
     elm-mode
     haxe-mode
+    markdown-mode
+    web-mode
+    org-plus-contrib
     ))
 
 (mapc #'(lambda (package)
@@ -66,9 +80,9 @@
 ;; ------------------------
 
 (elpy-enable)
-(elpy-use-ipython)
-(setq elpy-rpc-python-command "python3")
-(setq python-shell-interpreter "ipython3")
+(setq python-shell-interpreter "ipython3"
+      python-shell-interpreter-args "-i --simple-prompt"
+      elpy-rpc-python-command "python3")
 
 (when (require 'flycheck nil t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
@@ -100,13 +114,16 @@
 ;; Org CUSTOMIZATION
 ;; ------------------------
 
+(global-set-key "\C-cl" 'org-store-link)
+
 (setq org-src-fontify-natively t)
 (setq org-startup-truncated nil)
 (setq org-time-clocksum-use-fractional t)
 
+(require 'org-notmuch)
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "tabularx"))
-
+(add-hook 'org-mode-hook (lambda() (linum-mode -1)))
 
 ;; Tramp
 ;;-----------------
@@ -122,3 +139,27 @@
 (setq ledger-mode-should-check-version nil
       ledger-report-links-in-register nil
       ledger-binary-path "hledger")
+
+;; haXe
+;;-------
+(defconst my-haxe-style
+  '("java" (c-offsets-alist . ((case-label . +)
+                               (arglist-intro . +)
+                               (arglist-cont-nonempty . 0)
+                               (arglist-close . 0)
+                               (cpp-macro . 0))))
+  "My Haxe Programming Style")
+(add-hook 'haxe-mode-hook
+  (function (lambda () (c-add-style "haxe" my-haxe-style t))))
+(add-hook 'haxe-mode-hook
+          (function
+           (lambda ()
+             (setq tab-width 4)
+             (setq indent-tabs-mode t)
+             (setq fill-column 80)
+             (local-set-key [(return)] 'newline-and-indent))))
+
+;; web-mode
+;; -------------
+
+(add-to-list 'auto-mode-alist '("\\.liquid\\'" . web-mode))
