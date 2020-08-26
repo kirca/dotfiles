@@ -120,7 +120,7 @@
 (setq org-startup-truncated nil)
 (setq org-time-clocksum-use-fractional t)
 
-(require 'org-notmuch)
+(require 'ol-notmuch)
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "tabularx"))
 (add-hook 'org-mode-hook (lambda() (linum-mode -1)))
