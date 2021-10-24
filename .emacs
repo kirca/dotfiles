@@ -10,19 +10,19 @@
              '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
-(load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
-(load-file "~/.emacs.d/docker-tramp.el/docker-tramp.el")
-(load-file "~/.emacs.d/lxc-tramp.el/lxc-tramp.el")
-(load-file "~/.emacs.d/haxe-mode.el")
-(load-file "~/.emacs.d/beancount.el")
-(load-file "~/.emacs.d/subtitles.el")
+;; (load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
+;; (load-file "~/.emacs.d/docker-tramp.el/docker-tramp.el")
+;; (load-file "~/.emacs.d/lxc-tramp.el/lxc-tramp.el")
+;; (load-file "~/.emacs.d/haxe-mode.el")
+;; (load-file "~/.emacs.d/beancount.el")
+;; (load-file "~/.emacs.d/subtitles.el")
 
-(add-to-list 'load-path "~/.emacs.d/notmuch-0.21/")
-(require 'notmuch)
+;; (add-to-list 'load-path "~/.emacs.d/notmuch-0.21/")
+;; (require 'notmuch)
 
-(add-to-list 'load-path "~/.emacs.d/emacs-gdscript-mode/")
-(setq prog-first-column 0)
-(require 'gdscript-mode)
+;; (add-to-list 'load-path "~/.emacs.d/emacs-gdscript-mode/")
+;; (setq prog-first-column 0)
+;; (require 'gdscript-mode)
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -40,7 +40,7 @@
     alchemist
     cider
     haskell-mode
-    intero
+    ;;intero
     go-mode
     ledger-mode
     rust-mode
