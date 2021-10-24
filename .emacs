@@ -116,6 +116,11 @@
 
 (global-set-key "\C-cl" 'org-store-link)
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
+(setq org-babel-python-command "python3")
+(setq org-src-tab-acts-natively t)
 (setq org-src-fontify-natively t)
 (setq org-startup-truncated nil)
 (setq org-time-clocksum-use-fractional t)
