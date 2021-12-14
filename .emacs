@@ -24,6 +24,8 @@
 ;; (setq prog-first-column 0)
 ;; (require 'gdscript-mode)
 
+(add-to-list 'process-coding-system-alist '("python" . (utf-8 . utf-8)))
+
 (package-initialize)
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -123,6 +125,7 @@
 (setq org-src-tab-acts-natively t)
 (setq org-src-fontify-natively t)
 (setq org-startup-truncated nil)
+(setq org-startup-folded t)
 (setq org-time-clocksum-use-fractional t)
 
 (require 'ol-notmuch)
