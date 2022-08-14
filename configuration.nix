@@ -12,8 +12,12 @@
     ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_5_16;
 
   nixpkgs.config.allowUnfree = true;
+
+  services.logind.lidSwitch = "lock";
+  services.logind.lidSwitchDocked = "lock";
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -101,6 +105,10 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+
+  programs.xss-lock.enable = true;
+
+  programs.steam.enable = true;
 
   # List services that you want to enable:
 

@@ -51,6 +51,7 @@
     markdown-mode
     web-mode
     org-plus-contrib
+    nix-mode
     ))
 
 (mapc #'(lambda (package)
@@ -171,3 +172,8 @@
 ;; -------------
 
 (add-to-list 'auto-mode-alist '("\\.liquid\\'" . web-mode))
+
+;; nix
+;; -----------
+(require 'nix-mode)
+(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
