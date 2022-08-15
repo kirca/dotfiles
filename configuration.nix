@@ -18,7 +18,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "lambda-is"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -61,6 +61,11 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplip ];
+  services.avahi.enable = true;
+  # Important to resolve .local domains of printers, otherwise you get an error
+  # like  "Impossible to connect to XXX.local: Name or service not known"
+  services.avahi.nssmdns = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
