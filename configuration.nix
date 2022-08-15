@@ -11,66 +11,73 @@
       ./hardware-configuration.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelPackages = pkgs.linuxPackages_5_16;
+  boot.kernelPackages = pkgs.linuxPackages_5_19;
 
-  nixpkgs.config.allowUnfree = true;
-
-  services.logind.lidSwitch = "lock";
-  services.logind.lidSwitchDocked = "lock";
-
-  # Use the systemd-boot EFI boot loader.
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  boot.loader.grub.extraEntries = ''
-    menuentry "Ubuntu" {
-      search --set=ubuntu --fs-uuid 5d646c40-9216-4a5a-955c-c4c1f6aa6e7b
-      configfile "($ubuntu)/boot/grub/grub.cfg"
-    }
-  '';
-
-  # networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  # time.timeZone = "Europe/Skopje";
-
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
-  networking.useDHCP = false;
-  networking.interfaces.wlp2s0.useDHCP = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
+  time.timeZone = "Europe/Skopje";
+
   # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  # };
+  i18n.defaultLocale = "en_US.utf8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "mk_MK.utf8";
+    LC_IDENTIFICATION = "mk_MK.utf8";
+    LC_MEASUREMENT = "mk_MK.utf8";
+    LC_MONETARY = "mk_MK.utf8";
+    LC_NAME = "mk_MK.utf8";
+    LC_NUMERIC = "mk_MK.utf8";
+    LC_PAPER = "mk_MK.utf8";
+    LC_TELEPHONE = "mk_MK.utf8";
+    LC_TIME = "mk_MK.utf8";
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
+
+  # Enable the GNOME Desktop Environment.
+  services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-
-
-
   # Configure keymap in X11
-  # services.xserver.layout = "us";
-  # services.xserver.xkbOptions = "eurosign:e";
+  services.xserver = {
+    layout = "us,mk";
+    xkbVariant = "";
+  };
 
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
 
-  # Enable sound.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = true;
+  # Enable sound with pipewire.
+  sound.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -78,10 +85,12 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.kiril = {
     isNormalUser = true;
-    home = "/home/kiril";
     description = "Kiril";
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "networkmanager" "wheel" ];
   };
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -93,9 +102,11 @@
     firefox
     google-chrome
     terminator
-    ntfs3g
-    exfat-utils
     git
+    thunderbird
+    ntfs3g
+    exfat
+    texlive.combined.scheme-full
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -105,8 +116,6 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-
-  programs.xss-lock.enable = true;
 
   programs.steam.enable = true;
 
@@ -127,7 +136,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.05"; # Did you read the comment?
+  system.stateVersion = "22.05"; # Did you read the comment?
 
 }
-
