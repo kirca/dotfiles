@@ -53,6 +53,11 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  # Enable postgres
+  services.postgresql.enable = true;
+  services.postgresql.package = pkgs.postgresql_11;
+  services.postgresql.authentication = ''local all all              trust'';
+
   # Configure keymap in X11
   services.xserver = {
     layout = "us,mk";
@@ -112,6 +117,7 @@
     ntfs3g
     exfat
     texlive.combined.scheme-full
+    zoom-us
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
