@@ -129,6 +129,8 @@
     exfat
     texlive.combined.scheme-full
     zoom-us
+    libreoffice
+    # spotify - download issue...
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
