@@ -25,6 +25,22 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  # There is issue that docker network interfaces keep getting renamed, example logs:
+  # eth0: renamed from veth3a0ecb2
+  # docker_gwbridge: port 2(veth85ecf6b) entered disabled state
+  # br0: port 3(veth84) entered blocking state
+  # br0: port 3(veth84) entered forwarding state
+  # eth1: renamed from veth0933893
+  # IPv6: ADDRCONF(NETDEV_CHANGE): veth85ecf6b: link becomes ready
+  # ...
+  # this creates network connectivity issues, wifi dropping.
+  # It looks like they are renamed by the system and docker restores the name.
+  # This should be connected with:
+  # https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/#:~:text=Starting%20with%20v197%20systemd%2Fudev,but%20should%20fix%20real%20problems.
+  # But disabling this doesn't seem to change anything.
+  # Only solution for now is to bring down containers so that veth* network interfaces are closed.
+  networking.usePredictableInterfaceNames = false;
+
   networking.extraHosts =
     ''
     127.0.0.1	arseno.docker ekyrail.docker eplatform.docker dosejuice.docker eboucher.docker d-rl.docker aerovac.docker pk-sound.docker leika.docker amh.docker balcon-ideal.docker createch.docker tohu.docker laberge.docker niche10.docker archeti15.docker thorasys.docker renover-habitat.docker artisans-indiens.docker
@@ -131,6 +147,7 @@
     zoom-us
     libreoffice
     # spotify - download issue...
+    pinta
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
