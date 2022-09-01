@@ -25,6 +25,11 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  networking.extraHosts =
+    ''
+    127.0.0.1	arseno.docker ekyrail.docker eplatform.docker dosejuice.docker eboucher.docker d-rl.docker aerovac.docker pk-sound.docker leika.docker amh.docker balcon-ideal.docker createch.docker tohu.docker laberge.docker niche10.docker archeti15.docker thorasys.docker renover-habitat.docker artisans-indiens.docker
+    '';
+
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -57,6 +62,12 @@
   services.postgresql.enable = true;
   services.postgresql.package = pkgs.postgresql_11;
   services.postgresql.authentication = ''local all all              trust'';
+
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    liveRestore = false;  # incompatible with docker swarm
+  };
 
   # Configure keymap in X11
   services.xserver = {
@@ -96,7 +107,7 @@
   users.users.kiril = {
     isNormalUser = true;
     description = "Kiril";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
   };
 
   # Allow unfree packages
