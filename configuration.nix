@@ -146,7 +146,7 @@
     texlive.combined.scheme-full
     zoom-us
     libreoffice
-    # spotify - download issue...
+    spotify
     pinta
   ];
 

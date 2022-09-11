@@ -82,10 +82,13 @@
 ;; PYTHON CUSTOMIZATION
 ;; ------------------------
 
+(require 'pyvenv)
+(pyvenv-activate "~/.elpy-venv")
+
 (elpy-enable)
-(setq python-shell-interpreter "ipython3"
+(setq python-shell-interpreter "~/.elpy-venv/bin/ipython3"
       python-shell-interpreter-args "-i --simple-prompt"
-      elpy-rpc-python-command "python3")
+      elpy-rpc-python-command "~/.elpy-venv/bin/python3")
 
 (when (require 'flycheck nil t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
