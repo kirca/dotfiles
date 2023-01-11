@@ -10,7 +10,7 @@
              '("melpa-stable" . "https://stable.melpa.org/packages/"))
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
-;; (load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
+(load-file "~/.emacs.d/yaml-mode/yaml-mode.el")
 ;; (load-file "~/.emacs.d/docker-tramp.el/docker-tramp.el")
 ;; (load-file "~/.emacs.d/lxc-tramp.el/lxc-tramp.el")
 ;; (load-file "~/.emacs.d/haxe-mode.el")
@@ -131,6 +131,13 @@
 (setq org-startup-truncated nil)
 (setq org-startup-folded t)
 (setq org-time-clocksum-use-fractional t)
+(setq org-agenda-files '("~/projects/lambda-is-tasks"))
+(setq org-agenda-prefix-format
+      '((agenda . " %-12:c %b %?-12t% s")
+        (timeline . "  % s")
+        (todo . " %i %-12:c")
+        (tags . " %i %-12:c")
+        (search . " %i %-12:c")))
 
 (require 'ol-notmuch)
 (require 'ox-latex)

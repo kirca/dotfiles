@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_5_19;
+  boot.kernelPackages = pkgs.linuxPackages_6_0;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -43,7 +43,7 @@
 
   networking.extraHosts =
     ''
-    127.0.0.1	arseno.docker ekyrail.docker eplatform.docker dosejuice.docker eboucher.docker d-rl.docker aerovac.docker pk-sound.docker leika.docker amh.docker balcon-ideal.docker createch.docker tohu.docker laberge.docker niche10.docker archeti15.docker thorasys.docker renover-habitat.docker artisans-indiens.docker corcoran.docker caf-caf.docker
+    127.0.0.1	arseno.docker ekyrail.docker eplatform.docker dosejuice.docker eboucher.docker d-rl.docker aerovac.docker pk-sound.docker leika.docker amh.docker balcon-ideal.docker createch.docker tohu.docker laberge.docker niche10.docker archeti15.docker thorasys.docker renover-habitat.docker artisans-indiens.docker corcoran.docker caf-caf.docker pk-hq.docker
     '';
 
   # Enable networking
