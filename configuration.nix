@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_0;
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -156,6 +156,7 @@
     libreoffice
     spotify
     pinta
+    libpulseaudio
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
