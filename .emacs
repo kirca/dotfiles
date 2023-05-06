@@ -26,6 +26,8 @@
 
 (add-to-list 'process-coding-system-alist '("python" . (utf-8 . utf-8)))
 
+(add-to-list 'load-path "~/.emacs.d/copilot.el")
+
 (package-initialize)
 (when (not package-archive-contents)
   (package-refresh-contents))
@@ -52,6 +54,9 @@
     web-mode
     org-plus-contrib
     nix-mode
+    s
+    dash
+    editorconfig
     ))
 
 (mapc #'(lambda (package)
@@ -187,3 +192,90 @@
 ;; -----------
 (require 'nix-mode)
 (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+
+;; copilot
+;; -----------
+(require 'copilot)
+(defun rk/no-copilot-mode ()
+  "Helper for `rk/no-copilot-modes'."
+  (copilot-mode -1))
+
+(defvar rk/no-copilot-modes '(shell-mode
+                              inferior-python-mode
+                              eshell-mode
+                              term-mode
+                              vterm-mode
+                              comint-mode
+                              compilation-mode
+                              debugger-mode
+                              dired-mode-hook
+                              compilation-mode-hook
+                              flutter-mode-hook
+                              minibuffer-mode-hook)
+  "Modes in which copilot is inconvenient.")
+
+(defun rk/copilot-disable-predicate ()
+  "When copilot should not automatically show completions."
+  (or rk/copilot-manual-mode
+      (member major-mode rk/no-copilot-modes)
+      (company--active-p)))
+
+(add-to-list 'copilot-disable-predicates #'rk/copilot-disable-predicate)
+
+(defvar rk/copilot-manual-mode t
+  "When `t' will only show completions when manually triggered, e.g. via M-C-<return>.")
+
+(defun rk/copilot-change-activation ()
+  "Switch between three activation modes:
+- automatic: copilot will automatically overlay completions
+- manual: you need to press a key (M-C-<return>) to trigger completions
+- off: copilot is completely disabled."
+  (interactive)
+  (if (and copilot-mode rk/copilot-manual-mode)
+      (progn
+        (message "deactivating copilot")
+        (global-copilot-mode -1)
+        (setq rk/copilot-manual-mode nil))
+    (if copilot-mode
+        (progn
+          (message "activating copilot manual mode")
+          (setq rk/copilot-manual-mode t))
+      (message "activating copilot mode")
+      (global-copilot-mode))))
+
+(define-key global-map (kbd "M-C-c") #'rk/copilot-change-activation)
+
+(defun rk/copilot-complete-or-accept ()
+  "Command that either triggers a completion or accepts one if one
+is available. Useful if you tend to hammer your keys like I do."
+  (interactive)
+  (if (copilot--overlay-visible)
+      (progn
+        (copilot-accept-completion)
+        (open-line 1)
+        (next-line))
+    (copilot-complete)))
+
+(define-key copilot-mode-map (kbd "M-C-<next>") #'copilot-next-completion)
+(define-key copilot-mode-map (kbd "M-C-<prior>") #'copilot-previous-completion)
+(define-key copilot-mode-map (kbd "M-C-w") #'copilot-accept-completion-by-word)
+(define-key copilot-mode-map (kbd "M-C-l") #'copilot-accept-completion-by-line)
+(define-key global-map (kbd "M-C-<return>") #'rk/copilot-complete-or-accept)
+
+(defun rk/copilot-quit ()
+  "Run `copilot-clear-overlay' or `keyboard-quit'. If copilot is
+cleared, make sure the overlay doesn't come back too soon."
+  (interactive)
+  (condition-case err
+      (when copilot--overlay
+        (lexical-let ((pre-copilot-disable-predicates copilot-disable-predicates))
+          (setq copilot-disable-predicates (list (lambda () t)))
+          (copilot-clear-overlay)
+          (run-with-idle-timer
+           1.0
+           nil
+           (lambda ()
+             (setq copilot-disable-predicates pre-copilot-disable-predicates)))))
+    (error handler)))
+
+(advice-add 'keyboard-quit :before #'rk/copilot-quit)
