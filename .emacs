@@ -208,6 +208,7 @@
                               comint-mode
                               compilation-mode
                               debugger-mode
+                              org-mode
                               dired-mode-hook
                               compilation-mode-hook
                               flutter-mode-hook
@@ -222,7 +223,7 @@
 
 (add-to-list 'copilot-disable-predicates #'rk/copilot-disable-predicate)
 
-(defvar rk/copilot-manual-mode t
+(defvar rk/copilot-manual-mode nil
   "When `t' will only show completions when manually triggered, e.g. via M-C-<return>.")
 
 (defun rk/copilot-change-activation ()
