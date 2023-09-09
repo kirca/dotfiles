@@ -75,6 +75,10 @@
   services.xserver.displayManager.gdm.wayland = false;
   services.xserver.desktopManager.gnome.enable = true;
 
+  # NVIDIA drivers
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl.enable = true;
+
   # Enable postgres
   services.postgresql.enable = true;
   services.postgresql.package = pkgs.postgresql_11;

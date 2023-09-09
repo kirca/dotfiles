@@ -57,6 +57,7 @@
     s
     dash
     editorconfig
+    gdscript-mode
     ))
 
 (mapc #'(lambda (package)
