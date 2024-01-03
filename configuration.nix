@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_1;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -81,8 +81,11 @@
 
   # Enable postgres
   services.postgresql.enable = true;
-  services.postgresql.package = pkgs.postgresql_11;
-  services.postgresql.authentication = ''local all all              trust'';
+  services.postgresql.package = pkgs.postgresql_14;
+  services.postgresql.authentication = ''
+  local all all                 trust
+  host  all all  127.0.0.1/32   trust
+  '';
 
   # Docker
   virtualisation.docker = {
@@ -162,6 +165,7 @@
     pinta
     libpulseaudio
     nodejs
+    fragments
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
