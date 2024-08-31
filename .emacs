@@ -57,7 +57,7 @@
     s
     dash
     editorconfig
-    gdscript-mode
+    ;;gdscript-mode
     ))
 
 (mapc #'(lambda (package)
@@ -70,7 +70,7 @@
 
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
-(global-linum-mode t) ;; enable line numbers globally
+(global-display-line-numbers-mode t) ;; enable line numbers globally
 (global-auto-revert-mode 1) ;; auto reload buffer when underlying file is changed 
                             ;; (example by git checkout)
 

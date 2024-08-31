@@ -11,7 +11,7 @@
       ./hardware-configuration.nix
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -87,6 +87,9 @@
   host  all all  127.0.0.1/32   trust
   '';
 
+  # Enable flatpack
+  services.flatpak.enable = true;
+
   # Docker
   virtualisation.docker = {
     enable = true;
@@ -94,9 +97,9 @@
   };
 
   # Configure keymap in X11
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "us,mk";
-    xkbVariant = "";
+    variant = "";
   };
 
   # Enable CUPS to print documents.
@@ -105,7 +108,7 @@
   services.avahi.enable = true;
   # Important to resolve .local domains of printers, otherwise you get an error
   # like  "Impossible to connect to XXX.local: Name or service not known"
-  services.avahi.nssmdns = true;
+  services.avahi.nssmdns4 = true;
 
   # Enable scanner support
   hardware.sane.enable = true;
