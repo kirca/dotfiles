@@ -70,7 +70,7 @@
 
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
-(global-display-line-numbers-mode t) ;; enable line numbers globally
+(add-hook 'prog-mode-hook #'display-line-numbers-mode) ;; enable line numbers in programming modes
 (global-auto-revert-mode 1) ;; auto reload buffer when underlying file is changed 
                             ;; (example by git checkout)
 
@@ -148,7 +148,6 @@
 (require 'ol-notmuch)
 (require 'ox-latex)
 (add-to-list 'org-latex-packages-alist '("" "tabularx"))
-(add-hook 'org-mode-hook (lambda() (linum-mode -1)))
 
 ;; Tramp
 ;;-----------------
