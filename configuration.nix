@@ -43,14 +43,11 @@
 
   networking.extraHosts =
     ''
-    127.0.0.1	arseno.docker ekyrail.docker eplatform.docker dosejuice.docker eboucher.docker d-rl.docker aerovac.docker pk-sound.docker leika.docker amh.docker balcon-ideal.docker createch.docker tohu.docker laberge.docker niche10.docker archeti15.docker thorasys.docker renover-habitat.docker artisans-indiens.docker corcoran.docker caf-caf.docker pk-hq.docker arseno15.docker
+    127.0.0.1
     '';
 
   # Enable networking
   networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Europe/Skopje";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.utf8";
