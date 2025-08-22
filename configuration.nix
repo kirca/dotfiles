@@ -50,7 +50,7 @@
   networking.networkmanager.enable = true;
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.utf8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "mk_MK.utf8";
@@ -74,7 +74,8 @@
 
   # NVIDIA drivers
   services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
+  hardware.nvidia.open = true;
 
   # Enable postgres
   services.postgresql.enable = true;
@@ -115,8 +116,7 @@
   };
 
   # Enable sound with pipewire.
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
