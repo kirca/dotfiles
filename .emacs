@@ -65,6 +65,17 @@
       (package-install package)))
       myPackages)
 
+(defvar treesit-language-source-alist
+  '(
+    (odin "https://github.com/tree-sitter-grammars/tree-sitter-odin")
+    ))
+
+(use-package odin-ts-mode
+  :ensure t
+  :vc (:url "https://github.com/Sampie159/odin-ts-mode.git"
+       :branch "main")
+  :mode "\\.odin\\'")
+
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
 
