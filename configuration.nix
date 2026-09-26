@@ -78,7 +78,8 @@
 
   # Enable postgres
   services.postgresql.enable = true;
-  services.postgresql.package = pkgs.postgresql_14;
+  services.postgresql.package = pkgs.postgresql_16;
+  services.postgresql.extensions = ps: with ps; [ pgvector ];
   services.postgresql.authentication = ''
   local all all                 trust
   host  all all  127.0.0.1/32   trust
@@ -130,6 +131,9 @@
     #media-session.enable = true;
   };
 
+  # Enable PC/SC Smart Card Daemon
+  services.pcscd.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
@@ -142,6 +146,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # Enable nix experimental features (nix command, flakes)
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -165,6 +172,9 @@
     libpulseaudio
     nodejs
     fragments
+    pcsc-tools
+    opensc
+    gcc
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
