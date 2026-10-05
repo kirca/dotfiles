@@ -2,7 +2,8 @@
 # (Intel Celeron N2840 "Bay Trail", Intel HD graphics, 2-4 GB RAM, 32 GB eMMC, UEFI).
 #
 # Accounts:
-#   admin - normal account with sudo, console only (log in on tty2: Ctrl+Alt+F2).
+#   admin - normal account with sudo; log in on tty2 (Ctrl+Alt+F2) or over SSH
+#           on port 2222 with a key from ~admin/.ssh/authorized_keys.
 #   vanja - auto-logged-in on tty1 straight into a menu of allowed programs.
 #
 # Install: boot the NixOS installer, partition the eMMC (/dev/mmcblk0: GPT with
@@ -30,6 +31,14 @@
     cores = 2; # Celeron N2840 is dual-core
     diskSize = 8192;
     qemu.options = [ "-vga virtio" ]; # DRM/KMS device for cage
+    # `ssh -p 2222 admin@localhost` from the host
+    forwardPorts = [
+      {
+        from = "host";
+        host.port = 2222;
+        guest.port = 2222;
+      }
+    ];
   };
 
   # Programs Vanja may start. Add an entry here to offer more software.
@@ -81,6 +90,19 @@
   # Networking (configure Wi-Fi as admin with `nmtui`)
   networking.hostName = "toshiba";
   networking.networkmanager.enable = true;
+
+  # SSH: admin only, public key only. Put the key in ~admin/.ssh/authorized_keys
+  # (sshd reads it by default; nothing is declared here).
+  services.openssh = {
+    enable = true;
+    ports = [ 2222 ]; # also opened in the firewall (openFirewall defaults to true)
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "admin" ];
+    };
+  };
 
   # Sound
   security.rtkit.enable = true;
