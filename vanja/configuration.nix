@@ -7,8 +7,10 @@
 #
 # Install: boot the NixOS installer, partition the eMMC (/dev/mmcblk0: GPT with
 # an EFI system partition + ext4 root), mount on /mnt, run
-# `nixos-generate-config --root /mnt`, copy this file and vanja-menu.nix into
-# /mnt/etc/nixos/ and run `nixos-install`.
+# `nixos-generate-config --root /mnt`, copy this file, vanja-menu.nix and
+# picotron.nix into /mnt/etc/nixos/, add the Picotron zip to the store with
+# `nix-store --add-fixed sha256 picotron_<version>_amd64.zip` (see picotron.nix)
+# and run `nixos-install`.
 #
 # Test in a VM on any NixOS host (from the flake root):
 #   nixos-rebuild build-vm --flake .#toshiba && ./result/bin/run-toshiba-vm
@@ -40,7 +42,15 @@
       label = "Minecraft";
       command = pkgs.lib.getExe pkgs.prismlauncher;
     };
+    picotron = {
+      label = "Picotron";
+      command = pkgs.lib.getExe (pkgs.callPackage ./picotron.nix { });
+    };
   };
+
+  # Picotron is proprietary; allow only it. The prefix match also covers its
+  # requireFile source, which is named after the zip (picotron_<ver>_amd64.zip).
+  nixpkgs.config.allowUnfreePredicate = pkg: lib.hasPrefix "picotron" (lib.getName pkg);
 
   # Boot
   boot.loader.systemd-boot.enable = true;
