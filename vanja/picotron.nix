@@ -48,9 +48,14 @@ stdenv.mkDerivation rec {
   runtimeDependencies = [ curl.out ];
 
   # picotron_dyn links against nixpkgs' SDL2. The static `picotron` bundles its
-  # own SDL, which can't find X11 here and falls back to KMSDRM; under cage that
-  # fails ("could not create renderer") and leaves tty1 unusable for the menu.
-  # SDL_VIDEODRIVER=x11 runs it through cage's Xwayland, like Minecraft.
+  # own SDL, which can't find X11 here and falls back to KMSDRM; under the
+  # compositor that fails ("could not create renderer") and leaves tty1
+  # unusable for the menu.
+  # It runs natively on Wayland: Picotron hides the cursor and warps the
+  # pointer, which under Xwayland in sway turns on Xwayland's warp emulation
+  # (pointer lock + relative deltas) and makes the mouse/tablet imprecise. The
+  # EMULATE_*WARP hints (SDL3 and SDL2 names; nixpkgs' SDL2 is sdl2-compat) stop
+  # SDL doing the same emulation itself, so warps are no-ops as under cage.
   installPhase = ''
     runHook preInstall
 
@@ -59,7 +64,9 @@ stdenv.mkDerivation rec {
     # The binary expects picotron.dat in the working directory.
     makeWrapper $out/lib/picotron/picotron_dyn $out/bin/picotron \
       --chdir $out/lib/picotron \
-      --set-default SDL_VIDEODRIVER x11 \
+      --set-default SDL_VIDEODRIVER wayland \
+      --set-default SDL_MOUSE_EMULATE_WARP_WITH_RELATIVE 0 \
+      --set-default SDL_VIDEO_WAYLAND_EMULATE_MOUSE_WARP 0 \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [ libGL ]}
 
     runHook postInstall

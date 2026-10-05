@@ -2,7 +2,9 @@
 #
 # Vanja is auto-logged-in on tty1 and the login shell *is* the menu, so there
 # is no way to reach a regular shell. Each selected program runs fullscreen in
-# the `cage` Wayland kiosk compositor; when it exits, the menu comes back.
+# the `sway` Wayland compositor with a kiosk config (no bar, no keybindings);
+# when it exits, sway exits and the menu comes back. (sway rather than cage
+# because cage ignores drawing tablets.)
 # If the menu itself ever exits, the session ends and getty logs Vanja in again.
 {
   config,
@@ -20,14 +22,38 @@ let
     name: "${lib.escapeShellArg name} ${lib.escapeShellArg cfg.apps.${name}.label}"
   ) appNames;
 
+  # Runs the app, then ends the sway session. A script because sway's `exec`
+  # treats `;` as a command separator.
+  launcher =
+    name:
+    pkgs.writeShellScript "vanja-${name}" ''
+      ${cfg.apps.${name}.command}
+      ${pkgs.sway}/bin/swaymsg exit
+    '';
+
+  # -c skips sway's default config, so there are no keybindings or bar. A single
+  # borderless tiled window fills the screen without being marked fullscreen;
+  # forcing fullscreen on SDL/X11 apps (Picotron) offsets their mouse.
+  swayConfig =
+    name:
+    pkgs.writeText "vanja-sway-${name}.conf" ''
+      default_border none
+      default_floating_border none
+      focus_follows_mouse no
+      swaynag_command -
+      xwayland enable
+      ${cfg.apps.${name}.extraSwayConfig}
+      exec ${launcher name}
+    '';
+
   caseArms = lib.concatMapStringsSep "\n" (name: ''
-    ${lib.escapeShellArg name}) cage -s -- ${cfg.apps.${name}.command} >>"$log" 2>&1 || true ;;
+    ${lib.escapeShellArg name}) sway -c ${swayConfig name} >>"$log" 2>&1 || true ;;
   '') appNames;
 
   menu = pkgs.writeShellApplication {
     name = "vanja-menu";
     runtimeInputs = with pkgs; [
-      cage
+      sway
       dialog
       ncurses
       systemd
@@ -91,7 +117,12 @@ in
             };
             command = lib.mkOption {
               type = lib.types.str;
-              description = "Command (with arguments) started inside cage.";
+              description = "Command (with arguments) started inside sway.";
+            };
+            extraSwayConfig = lib.mkOption {
+              type = lib.types.lines;
+              default = "";
+              description = "Extra sway config lines for this app's session.";
             };
           };
         }
@@ -116,7 +147,7 @@ in
       ];
     };
 
-    # Games using GLFW/SDL on X11 (e.g. Minecraft) run through Xwayland in cage.
+    # Games using GLFW/SDL on X11 (e.g. Minecraft) run through Xwayland in sway.
     programs.xwayland.enable = true;
     fonts.packages = [ pkgs.dejavu_fonts ];
   };

@@ -30,7 +30,7 @@
     memorySize = 3072; # about the laptop's RAM; Minecraft needs it
     cores = 2; # Celeron N2840 is dual-core
     diskSize = 8192;
-    qemu.options = [ "-vga virtio" ]; # DRM/KMS device for cage
+    qemu.options = [ "-vga virtio" ]; # DRM/KMS device for sway
     # `ssh -p 2222 admin@localhost` from the host
     forwardPorts = [
       {
@@ -50,6 +50,8 @@
     minecraft = {
       label = "Minecraft";
       command = pkgs.lib.getExe pkgs.prismlauncher;
+      # The game opens next to the launcher; show it over the launcher instead.
+      extraSwayConfig = ''for_window [class="^Minecraft"] fullscreen enable'';
     };
     picotron = {
       label = "Picotron";
